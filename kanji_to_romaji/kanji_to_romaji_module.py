@@ -31,7 +31,7 @@ def load_kana_mappings_dict():
     kana_romaji_mapping = {}
     for f in os.listdir(JP_MAPPINGS_PATH):
         if os.path.splitext(f)[1] == ".json" and "kanji" not in f:
-            with open(os.path.join(JP_MAPPINGS_PATH, f)) as data_file:
+            with open(os.path.join(JP_MAPPINGS_PATH, f),encoding='utf-8') as data_file:
                 kana_romaji_mapping.update(json.load(data_file))
     return kana_romaji_mapping
 
@@ -60,7 +60,7 @@ def load_kanji_mappings_dict():
 
     for f in f_list:
         if os.path.splitext(f)[1] == ".json" and "kanji" in f:
-            with open(os.path.join(JP_MAPPINGS_PATH, f)) as data_file:
+            with open(os.path.join(JP_MAPPINGS_PATH, f),encoding="utf-8") as data_file:
                 data_file_dict = json.load(data_file)
                 for k in data_file_dict.keys():
                     if k in kanji_romaji_mapping and \
@@ -625,8 +625,6 @@ def translate_kana_iteration_mark(kana):
 
 
 def kanji_to_romaji(kana):
-    if type(kana) == str:
-        kana = kana.decode("utf-8")
     pk = translate_kana_iteration_mark(kana)
     pk = translate_soukon_ch(pk)
     pk_list = prep_kanji(pk)
@@ -635,12 +633,12 @@ def kanji_to_romaji(kana):
     pk = translate_to_romaji(pk)
     pk = translate_soukon(pk)
     r = translate_long_vowel(pk)
-    return r.encode("unicode_escape").replace("\\\\", "\\")
+    return r
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        print kanji_to_romaji(("".join(sys.argv[1:])).decode('unicode-escape'))
+        print (kanji_to_romaji(("".join(sys.argv[1:])).decode('unicode-escape')))
     else:
-        print "Missing Kanji/Kana character argument\n" \
-              "e.g: kanji_to_romaji.py \u30D2"
+        print ("Missing Kanji/Kana character argument\n" \
+              "e.g: kanji_to_romaji.py \u30D2")
